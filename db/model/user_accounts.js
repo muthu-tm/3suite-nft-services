@@ -8,7 +8,7 @@ export function user_accounts(sequelize, DataTypes) {
         primaryKey: true,
       },
       address: { type: DataTypes.STRING, allowNull: false },
-      chainID: { type: DataTypes.INTEGER, allowNull: true },
+      chain_id: { type: DataTypes.INTEGER, allowNull: true },
       name: {
         type: DataTypes.STRING,
         defaultValue: "",
