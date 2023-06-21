@@ -9,6 +9,11 @@ import UserAuthController from "../lib/controllers/UserAuthController.js";
 
 let ensure_jwt_auth = middleware_ensure_jwt_auth();
 
+router.post("/verify", async function (request, response, next) {
+  const authController = new UserAuthController(response);
+  await authController.verify(request);
+});
+
 router.post("/register", async function (request, response, next) {
   const authController = new UserAuthController(response);
   await authController.register(request);
