@@ -1,15 +1,18 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+/* initialize all db models and assign to global variable */
 import db from "./db/index.js";
+import firestore_db  from './lib/initialize_firebase_db.js';
 global.db = db;
+global.firestore_db = firestore_db;
 
 import cors from "cors";
 import helmet from "helmet";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-
+import fileupload from "express-fileupload";
 import passport from "./lib/passport.js";
 import Environment from "./lib/environment.js";
 import routes from "./routes/index.js";
@@ -26,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(fileupload());
 
 app.use("/status", (req, res) => {
   const data = {
@@ -48,7 +52,7 @@ app.use(function (request, response, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get("env") === "development") {
+if (app.get("env") === "dev") {
   app.use(function (err, request, response, next) {
     console.log(err);
     return response.json({ status: false, message: err.message, err: err });
@@ -64,5 +68,5 @@ if (app.get("env") === "development") {
 var port = process.env.PORT || "3000";
 app.set("port", port);
 app.listen(port, () => {
-  console.log(`Lit server listening on port ${port}`);
+  console.log(`App server listening on port ${port}`);
 });

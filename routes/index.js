@@ -5,8 +5,8 @@ import user_routes from "./user.routes.js";
 import nft_routes from "./nft.routes.js";
 
 // passport session auth checker
-import ensureJWTAuth from "../lib/middleware/ensure_jwt_auth.js";
-let ensureJWTAuth = ensureJWTAuth();
+import ensure_jwt_auth from "../lib/middleware/ensure_jwt_auth.js";
+let ensureJWTAuth = ensure_jwt_auth();
 
 router.use("/user", user_routes);
 router.use("/nft", ensureJWTAuth, nft_routes);

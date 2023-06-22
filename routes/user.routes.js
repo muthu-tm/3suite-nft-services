@@ -9,6 +9,11 @@ import UserAuthController from "../lib/controllers/UserAuthController.js";
 
 let ensure_jwt_auth = middleware_ensure_jwt_auth();
 
+router.post("/verify/id", async function (request, response, next) {
+  const authController = new UserAuthController(response);
+  await authController.verifyUserID(request);
+});
+
 router.post("/verify", async function (request, response, next) {
   const authController = new UserAuthController(response);
   await authController.verify(request);
@@ -16,12 +21,12 @@ router.post("/verify", async function (request, response, next) {
 
 router.post("/register", async function (request, response, next) {
   const authController = new UserAuthController(response);
-  await authController.register(request);
+  await authController.register(request, response);
 });
 
 router.post("/login", async function (request, response, next) {
   const authController = new UserAuthController(response);
-  await authController.login(request);
+  await authController.login(request, next);
 });
 
 router.post("/token/refresh", async function (request, response, next) {
