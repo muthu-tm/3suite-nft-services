@@ -74,8 +74,7 @@ User.schema = Joi.object({
 
         img: Joi.string()
             .optional()
-            .allow('')
-            .email(),
+            .allow(''),
 
     }).unknown()
         .allow(true),
