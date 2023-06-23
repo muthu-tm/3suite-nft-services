@@ -35,8 +35,8 @@ class NFTAsset extends Model {
         return this.Build(nft);
     }
 
-    static async fetch_nft_by_nft_id(nft_id) {
-        let usnfter = await this.get_col_ref().where("nft_id", "==", nft_id).get()
+    static async fetch_nft_by_nft_id(contract) {
+        let usnfter = await this.get_col_ref().where("contract", "==", nft_id).get()
         if (nft.empty) {
             return [];
         }
@@ -78,7 +78,14 @@ NFTAsset.schema = Joi.object({
         .default(""),
 
     status: Joi.number()
-        .required(),
+        .required()
+        .default(0),
+
+    tags: Joi.array()
+        .items(Joi.string()
+        .optional())
+        .optional()
+        .default([]),
 
     contract: Joi.string()
         .allow("")
@@ -87,13 +94,11 @@ NFTAsset.schema = Joi.object({
     owner: Joi.object({
         address: Joi.string()
             .optional()
-            .allow('')
-            .email(),
+            .allow(''),
 
         id: Joi.string()
             .optional()
-            .allow('')
-            .email(),
+            .allow(''),
 
     }).unknown()
         .allow(true),
@@ -105,7 +110,6 @@ NFTAsset.schema = Joi.object({
 
         id: Joi.string()
             .allow(''),
-
     }).unknown()
         .allow(true),
 
