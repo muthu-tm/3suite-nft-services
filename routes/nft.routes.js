@@ -15,4 +15,10 @@ router.post("/upload-metadata", async (request, response) => {
     await nftController.uploadMetaToIPFS(request);
 });
 
+router.post("/", async (request, response) => {
+    const nftController = new NFTController(response);
+    await nftController.uploadImageToIPFS(request);
+});
+
+
 export default router;
