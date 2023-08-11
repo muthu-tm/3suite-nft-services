@@ -1,24 +1,24 @@
 import Joi from 'joi';
 
 import firestore_db from '../lib/initialize_firebase_db.js';
-const config_collection_ref = firestore_db.collection("nft_config");
+const config_collection_ref = firestore_db.collection("app_config");
 
-class NFTConfig {
+class AppConfig {
     static get_col_ref() {
         return config_collection_ref;
     };
 
-    static async fetch_nft_config(id) {
-        let nft_doc_snap = await this.get_col_ref().limit(1).get()
-        if (nft_doc_snap.empty) {
+    static async fetch_app_config(id) {
+        let app_doc_snap = await this.get_col_ref().limit(1).get()
+        if (app_doc_snap.empty) {
             return;
         }
 
-        return Object.assign(new this(), nft_doc_snap.docs[0].data());
+        return Object.assign(new this(), app_doc_snap.docs[0].data());
     }
 }
 
-NFTConfig.schema = Joi.object({
+AppConfig.schema = Joi.object({
     tags: Joi.array()
         .items(Joi.object()
             .pattern(/^/, 
@@ -34,4 +34,4 @@ NFTConfig.schema = Joi.object({
         )
 })
 
-export default NFTConfig;
+export default AppConfig;

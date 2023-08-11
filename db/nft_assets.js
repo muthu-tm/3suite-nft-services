@@ -35,29 +35,149 @@ class NFTAsset extends Model {
         return this.Build(nft);
     }
 
-    static async fetch_nft_by_nft_id(contract) {
-        let usnfter = await this.get_col_ref().where("contract", "==", nft_id).get()
-        if (nft.empty) {
-            return [];
-        }
-
-        return this.Build(nft.docs[0].data());
-    }
-
-    static async fetch_nft_by_address(address) {
-        let doc_snap = await this.get_col_ref().where("creator.address", "==", address).get()
+    static async fetch_nft_by_contract(contract) {
+        let doc_snap = await this.get_col_ref().where("contract", "==", contract).get()
         if (doc_snap.empty) {
             return;
         }
 
-        let data = [];
-        for (let index = 0; index < doc_snap.docs.length; index++) {
-            const doc = doc_snap.docs[index];
-            let data_obj = doc.data();
-            data_obj.id = doc.id
-            data.push(data_obj);
+        return this.Build(doc_snap.docs[0].data());
+    }
+
+    static async fetch_nft_by_creator(id, meta, status) {
+        let doc_snap = await this.get_col_ref().where("creator.id", "==", id)
+            .where("metadata", "==", meta)
+            .where("status", "==", status).get()
+        if (doc_snap.empty) {
+            return;
         }
 
+        return this.Build(doc_snap.docs[0].data());
+    }
+
+    static async fetch_nft_by_creator_id(id) {
+        let doc_snap = await this.get_col_ref().where("creator.id", "==", id).get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
+    static async fetch_nft_by_owner_id(id) {
+        let doc_snap = await this.get_col_ref().where("owner.id", "==", id).get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
+    // UI Get functions for DASHBOARD
+    static async fetch_all_assets(startAfter, limit, sortBy, tags) {
+        let doc_query;
+        if (tags.length > 0) {
+            doc_query = this.get_col_ref()
+                .where('tags', 'array-contains-any', tags)
+                .orderBy('created_at', sortBy)
+        } else {
+            doc_query = this.get_col_ref()
+                .orderBy('created_at', sortBy)
+
+        }
+
+        if (startAfter) {
+            var timestamp = admin.firestore.Timestamp.fromMillis(startAfter)
+            doc_query = doc_query.startAfter(timestamp).limit(limit)
+        } else {
+            doc_query = doc_query.limit(limit)
+        }
+
+        let doc_snap = await doc_query.get();
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
+
+    // UI Get functions for DASHBOARD
+    static async fetch_relevant_assets(startAfter, limit, sortBy, tags, asset_id) {
+        let doc_query;
+        if (tags.length > 0) {
+            doc_query = this.get_col_ref()
+                .where('tags', 'array-contains-any', tags)
+                .orderBy('created_at', sortBy)
+        } else {
+            doc_query = this.get_col_ref()
+                .orderBy('created_at', sortBy)
+        }
+
+        if (startAfter) {
+            var timestamp = admin.firestore.Timestamp.fromMillis(startAfter)
+            doc_query = doc_query.startAfter(timestamp).limit(limit)
+        } else {
+            doc_query = doc_query.limit(limit)
+        }
+
+        let doc_snap = await doc_query.get();
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            if (doc.id !== asset_id) {
+                data.push(doc.data());
+            }
+        });
+
+        return data;
+    }
+
+    static async fetch_top_assets(startAfter, limit, sortBy, tags) {
+        let doc_query;
+        if (tags.length > 0) {
+            doc_query = this.get_col_ref()
+                .where('tags', 'array-contains-any', tags)
+                .orderBy('created_at', sortBy)
+        } else {
+            doc_query = this.get_col_ref()
+                .orderBy('created_at', sortBy)
+        }
+
+        if (startAfter) {
+            var timestamp = admin.firestore.Timestamp.fromMillis(startAfter * 1000)
+            doc_query = doc_query.startAfter(timestamp).limit(limit)
+        } else {
+            doc_query = doc_query.limit(limit)
+        }
+
+        let doc_snap = await doc_query.get();
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
 
         return data;
     }

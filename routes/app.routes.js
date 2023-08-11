@@ -10,4 +10,9 @@ router.get("/config", async (request, response) => {
     await appController.getConfig(request);
 });
 
+router.get("/presigned-user-url", async (request, response) => {
+    const appController = new AppController(response);
+    await appController.getPresignedUserURL(request);
+});
+
 export default router;

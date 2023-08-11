@@ -52,19 +52,74 @@ class User extends Model {
 
         return this.Build(user.docs[0].data());
     }
+
+    static async fetch_top_users(startAfter, limit, soryBy) {
+        let doc_snap = this.get_col_ref()
+            .where("is_active", "==", true)
+            .orderBy('created_at', soryBy)
+
+        if (startAfter) {
+            var timestamp = admin.firestore.Timestamp.fromMillis(startAfter * 1000)
+            doc_snap = doc_snap.startAfter(timestamp).limit(limit)
+        } else {
+            doc_snap = doc_snap.limit(limit)
+        }
+
+        doc_snap = await doc_snap.get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
+    static async fetch_all_users(startAfter, limit, soryBy) {
+        let doc_snap = this.get_col_ref()
+            .where("is_active", "==", true)
+            .orderBy('created_at', soryBy)
+
+        if (startAfter) {
+            var timestamp = admin.firestore.Timestamp.fromMillis(startAfter * 1000)
+            doc_snap = doc_snap.startAfter(timestamp).limit(limit)
+        } else {
+            doc_snap = doc_snap.limit(limit)
+        }
+
+        doc_snap = await doc_snap.get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
 }
 
 User.schema = Joi.object({
-    first_name: Joi.string()
+    name: Joi.string()
         .optional(),
-
-    last_name: Joi.string()
-        .optional()
-        .allow("")
-        .default(""),
 
     user_id: Joi.string()
         .required(),
+
+    bio: Joi.string()
+        .optional()
+        .allow(''),
+
+    preferences: Joi.array()
+        .items(Joi.string()
+            .optional())
+        .optional()
+        .default([]),
 
     profile: Joi.object({
         email: Joi.string()
@@ -76,8 +131,15 @@ User.schema = Joi.object({
             .optional()
             .allow(''),
 
+        banner: Joi.string()
+            .optional()
+            .allow(''),
+
     }).unknown()
         .allow(true),
+
+    is_active: Joi.boolean()
+        .default(true),
 
     refresh_token: Joi.string()
         .optional()
