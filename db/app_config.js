@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 import firestore_db from '../lib/initialize_firebase_db.js';
-const config_collection_ref = firestore_db.collection("app_config");
+const config_collection_ref = firestore_db.collection("nft_config");
 
 class AppConfig {
     static get_col_ref() {
@@ -21,15 +21,19 @@ class AppConfig {
 AppConfig.schema = Joi.object({
     tags: Joi.array()
         .items(Joi.object()
-            .pattern(/^/, 
-            Joi.object({
-                name: Joi.string()
-                    .allow(''),
-        
-                desc: Joi.string()
-                    .optional()
-                    .allow(''),
-            })
+            .pattern(/^/,
+                Joi.object({
+                    name: Joi.string()
+                        .allow(''),
+
+                    desc: Joi.string()
+                        .optional()
+                        .allow(''),
+
+                    img: Joi.string()
+                        .optional()
+                        .allow(''),
+                })
             )
         )
 })

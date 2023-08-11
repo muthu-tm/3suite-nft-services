@@ -11,6 +11,6 @@ let ensureJWTAuth = ensure_jwt_auth();
 
 router.use("/user", user_routes);
 router.use("/app", app_routes);
-router.use("/nft", ensureJWTAuth, nft_routes);
+router.use("/nft", nft_routes);
 
 export default router;
