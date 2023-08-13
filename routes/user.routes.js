@@ -50,7 +50,7 @@ router.get("/top", async (request, response) => {
   await userController.getTopUsers(request);
 });
 
-router.get("/", ensure_jwt_auth, async (request, response) => {
+router.get("/", async (request, response) => {
   const userController = new UserController(response);
   await userController.getUser(request);
 });
