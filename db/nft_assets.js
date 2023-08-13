@@ -83,6 +83,35 @@ class NFTAsset extends Model {
         return data;
     }
 
+
+    static async fetch_nft_by_creator_address(address) {
+        let doc_snap = await this.get_col_ref().where("creator.address", "==", address).get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
+    static async fetch_nft_by_owner_address(address) {
+        let doc_snap = await this.get_col_ref().where("owner.address", "==", address).get()
+        if (doc_snap.empty) {
+            return [];
+        }
+
+        let data = [];
+        doc_snap.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    }
+
     // UI Get functions for DASHBOARD
     static async fetch_all_assets(startAfter, limit, sortBy, tags) {
         let doc_query;
@@ -203,7 +232,7 @@ NFTAsset.schema = Joi.object({
 
     tags: Joi.array()
         .items(Joi.string()
-        .optional())
+            .optional())
         .optional()
         .default([]),
 
