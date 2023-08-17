@@ -213,8 +213,18 @@ class NFTAsset extends Model {
 }
 
 NFTAsset.schema = Joi.object({
+    id: Joi.string()
+        .uuid()
+        .required(),
+
     name: Joi.string()
         .optional(),
+
+    desc: Joi.string()
+        .optional(),
+
+    token_id: Joi.number()
+        .required(),
 
     metadata: Joi.string()
         .optional()
